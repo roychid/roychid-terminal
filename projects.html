@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<script>
+  (function() {
+    var t = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<head>
+  <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark light">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Roy Chidhungwana</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@300;400;500;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    [data-theme="dark"] {
+      --bg:          #080809; --bg2: #0f0f12;
+      --surface:     #131317; --surface2: #1a1a20;
+      --border:      #222228; --border2: #2c2c35;
+      --text:        #ededf0; --text2: #9898a6; --text3: #55555f;
+      --accent:      #6e57ff; --accent-soft: rgba(110,87,255,0.12);
+      --green:       #3ddba4; --green-soft: rgba(61,219,164,0.1);
+      --white:       #ffffff;
+      --shadow:      0 0 0 1px rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.4);
+    }
+    [data-theme="light"] {
+      --bg:          #f7f7f8; --bg2: #ffffff;
+      --surface:     #ffffff; --surface2: #f2f2f4;
+      --border:      #e4e4e8; --border2: #d0d0d8;
+      --text:        #111116; --text2: #636370; --text3: #aaaaB8;
+      --accent:      #5040e8; --accent-soft: rgba(80,64,232,0.08);
+      --green:       #1a9e72; --green-soft: rgba(26,158,114,0.08);
+      --white:       #111116;
+      --shadow:      0 0 0 1px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Cabinet Grotesk', sans-serif; font-size: 15px; line-height: 1.65; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s; }
+    a { color: inherit; text-decoration: none; }
+
+    header { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: rgba(8,8,9,0.8); backdrop-filter: blur(20px) saturate(160%); border-bottom: 1px solid var(--border); transition: background 0.3s, border-color 0.3s; }
+    [data-theme="light"] header { background: rgba(247,247,248,0.88); }
+    .logo { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; letter-spacing: 0.05em; color: var(--text); }
+    .logo-dot { color: var(--green); }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    nav { display: flex; align-items: center; gap: 4px; margin-right: 8px; }
+    nav a { font-size: 0.8rem; font-weight: 500; color: var(--text2); padding: 6px 14px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+    nav a:hover { color: var(--text); background: var(--surface2); }
+    nav a.active { color: var(--text); background: var(--surface2); }
+    .nav-cta { color: #fff !important; background: var(--accent) !important; }
+    .nav-cta:hover { opacity: 0.85 !important; }
+    .theme-toggle { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
+    .theme-toggle:hover { border-color: var(--border2); color: var(--text); }
+    .theme-toggle svg { width: 15px; height: 15px; }
+    .icon-moon { display: block; } .icon-sun { display: none; }
+    [data-theme="light"] .icon-moon { display: none; }
+    [data-theme="light"] .icon-sun  { display: block; }
+
+    .page-hero { padding: 120px 40px 56px; max-width: 860px; margin: 0 auto; }
+    .page-chip { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); padding: 4px 12px; border-radius: 100px; margin-bottom: 20px; opacity: 0; animation: fadeUp 0.6s cubic-bezier(.22,1,.36,1) forwards 0.1s; }
+    .page-chip::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+    .page-hero h1 { font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 800; color: var(--white); letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 16px; opacity: 0; animation: fadeUp 0.6s cubic-bezier(.22,1,.36,1) forwards 0.2s; }
+    .page-hero p  { font-size: 0.95rem; color: var(--text2); max-width: 420px; line-height: 1.8; opacity: 0; animation: fadeUp 0.6s cubic-bezier(.22,1,.36,1) forwards 0.3s; }
+
+    /* ── Project cards ── */
+    .projects-wrap { padding: 16px 40px 96px; max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+    .project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: grid; grid-template-columns: 1fr 300px; transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s; opacity: 0; animation: fadeUp 0.6s cubic-bezier(.22,1,.36,1) forwards; }
+    .project-card:hover { border-color: var(--border2); box-shadow: var(--shadow); transform: translateY(-3px); }
+
+    .project-body { padding: 36px 40px; display: flex; flex-direction: column; }
+    .project-top { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .proj-num { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text3); background: var(--surface2); border: 1px solid var(--border); padding: 2px 9px; border-radius: 5px; }
+
+    .proj-status { display: inline-flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; padding: 2px 9px; border-radius: 5px; }
+    .proj-status.live   { color: var(--green); background: var(--green-soft); }
+    .proj-status.draft  { color: #f59e0b; background: rgba(245,158,11,0.1); }
+    .proj-status.archived { color: var(--text3); background: var(--surface2); }
+    .live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s ease infinite; }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .proj-title { font-size: 1.5rem; font-weight: 700; color: var(--white); letter-spacing: -0.025em; margin-bottom: 12px; }
+    .proj-desc  { font-size: 0.88rem; color: var(--text2); line-height: 1.78; margin-bottom: 24px; flex: 1; }
+
+    .proj-stack { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 28px; }
+    .stack-tag  { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text2); background: var(--surface2); border: 1px solid var(--border); padding: 3px 10px; border-radius: 5px; }
+
+    .proj-links { display: flex; gap: 18px; align-items: center; }
+    .proj-link  { display: inline-flex; align-items: center; gap: 7px; font-size: 0.82rem; font-weight: 600; color: var(--accent); width: fit-content; transition: gap 0.2s; }
+    .proj-link:hover { gap: 11px; }
+    .proj-link.ghost { color: var(--text2); }
+    .proj-link.ghost:hover { color: var(--text); }
+
+    .proj-visual { background: var(--surface2); border-left: 1px solid var(--border); overflow: hidden; position: relative; min-height: 220px; }
+    .proj-visual img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: opacity 0.4s, transform 0.6s; }
+    .project-card:hover .proj-visual img { opacity: 1; transform: scale(1.03); }
+    .proj-visual-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text3); letter-spacing: 0.08em; }
+
+    /* ── Skeleton loader ── */
+    .skeleton-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: grid; grid-template-columns: 1fr 300px; height: 260px; }
+    .skel-body { padding: 36px 40px; display: flex; flex-direction: column; gap: 12px; }
+    .skel { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 4px; }
+    .skel-visual { background: var(--surface2); }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ── Empty state ── */
+    .empty-state { text-align: center; padding: 80px 40px; color: var(--text3); }
+    .empty-state h3 { font-size: 1.1rem; font-weight: 600; color: var(--text2); margin-bottom: 8px; }
+    .empty-state p  { font-size: 0.85rem; }
+
+    footer { padding: 28px 40px; max-width: 860px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 16px; }
+    .footer-links { display: flex; gap: 4px; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.78rem; font-weight: 500; color: var(--text2); padding: 6px 12px; border-radius: 6px; transition: all 0.15s; }
+    .footer-links a:hover { color: var(--text); background: var(--surface2); }
+    .footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text3); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 768px) {
+      header { padding: 0 20px; }
+      nav a:not(.nav-cta) { display: none; }
+      .page-hero { padding: 100px 20px 48px; }
+      .projects-wrap { padding: 16px 20px 64px; }
+      .project-card, .skeleton-card { grid-template-columns: 1fr; }
+      .proj-visual { min-height: 200px; border-left: none; border-top: 1px solid var(--border); }
+      footer { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="logo" href="index.html">roy<span class="logo-dot">.</span>chid</a>
+    <div class="header-right">
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="projects.html" class="active">Projects</a>
+        <a href="contact.html" class="nav-cta">Contact</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="page-hero">
+    <div class="page-chip">Selected work</div>
+    <h1>Things I've built.</h1>
+    <p>A collection of projects spanning web development and security tooling — built as a CS student who codes and breaks things in equal measure.</p>
+  </div>
+
+  <!-- Cards injected here by Firebase -->
+  <div class="projects-wrap" id="projects-wrap">
+    <!-- Skeleton placeholders while loading -->
+    <div class="skeleton-card" id="skel1">
+      <div class="skel-body">
+        <div class="skel" style="height:18px;width:80px;"></div>
+        <div class="skel" style="height:28px;width:60%;margin-top:8px;"></div>
+        <div class="skel" style="height:14px;width:100%;margin-top:4px;"></div>
+        <div class="skel" style="height:14px;width:85%;"></div>
+        <div class="skel" style="height:14px;width:70%;"></div>
+      </div>
+      <div class="skel-visual"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="https://github.com/roychid"    target="_blank">GitHub</a>
+      <a href="https://instagram.com/roychid" target="_blank">Instagram</a>
+      <a href="https://wa.me/+263775881639"   target="_blank">WhatsApp</a>
+      <a href="https://facebook.com/roychid"  target="_blank">Facebook</a>
+      <a href="mailto:roy@chidhungwana.dev">Email</a>
+    </div>
+    <span class="footer-copy">© 2025 Roy Chidhungwana</span>
+  </footer>
+
+  <script>
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  </script>
+
+  <!-- ── FIREBASE: load projects from Firestore ── -->
+  <script type="module">
+    import { initializeApp }                         from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getFirestore, collection, query, orderBy, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    // ✏️  FIREBASE CONFIG
+   const firebaseConfig = {
+    apiKey: "AIzaSyBRsenqkz6y8X9qv1kkp2lm9Ud3UzdOQ5A",
+    authDomain: "roychid-terminal.firebaseapp.com",
+    projectId: "roychid-terminal",
+    storageBucket: "roychid-terminal.firebasestorage.app",
+    messagingSenderId: "315928325816",
+    appId: "1:315928325816:web:51874a4df9128de9b8ce4d"
+  };
+
+    const app  = initializeApp(firebaseConfig);
+    const db   = getFirestore(app);
+    const wrap = document.getElementById('projects-wrap');
+
+    function statusBadge(status) {
+      const s = (status || 'Live').toLowerCase();
+      if (s === 'live')     return `<span class="proj-status live"><span class="live-dot"></span>Live</span>`;
+      if (s === 'draft')    return `<span class="proj-status draft">Draft</span>`;
+      if (s === 'archived') return `<span class="proj-status archived">Archived</span>`;
+      return `<span class="proj-status live"><span class="live-dot"></span>Live</span>`;
+    }
+
+    function buildCard(project, index) {
+      const tags = (project.tags || []).map(t => `<span class="stack-tag">${t}</span>`).join('');
+
+      const liveLink = project.liveUrl
+        ? `<a class="proj-link" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Visit site →</a>`
+        : '';
+      const ghLink = project.githubUrl
+        ? `<a class="proj-link ghost" href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">GitHub →</a>`
+        : '';
+
+      const visual = project.imageUrl
+        ? `<img src="${project.imageUrl}" alt="${project.title}" loading="lazy">`
+        : `<div class="proj-visual-placeholder">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>No preview</span>
+           </div>`;
+
+      const num = String(index + 1).padStart(2, '0');
+      const delay = 0.1 + index * 0.08;
+
+      return `
+        <div class="project-card" style="animation-delay:${delay}s;">
+          <div class="project-body">
+            <div class="project-top">
+              <span class="proj-num">${num}</span>
+              ${statusBadge(project.status)}
+            </div>
+            <div class="proj-title">${project.title || 'Untitled'}</div>
+            <p class="proj-desc">${project.description || ''}</p>
+            <div class="proj-stack">${tags}</div>
+            <div class="proj-links">${liveLink}${ghLink}</div>
+          </div>
+          <div class="proj-visual">${visual}</div>
+        </div>`;
+    }
+
+    async function loadProjects() {
+      try {
+        const q    = query(collection(db, 'projects'), orderBy('order', 'asc'));
+        const snap = await getDocs(q);
+
+        // Remove skeleton
+        wrap.innerHTML = '';
+
+        if (snap.empty) {
+          // Firestore has no projects yet — show Euro Live as hardcoded fallback
+          wrap.innerHTML = `
+            <div class="project-card" style="animation-delay:0.15s;">
+              <div class="project-body">
+                <div class="project-top">
+                  <span class="proj-num">01</span>
+                  <span class="proj-status live"><span class="live-dot"></span>Live</span>
+                </div>
+                <div class="proj-title">Euro Live</div>
+                <p class="proj-desc">Real-time football scores and match statistics. Built lightweight from scratch — no frameworks, just clean JavaScript pulling live data and rendering it fast. Deployed on Vercel.</p>
+                <div class="proj-stack">
+                  <span class="stack-tag">HTML</span>
+                  <span class="stack-tag">CSS</span>
+                  <span class="stack-tag">JavaScript</span>
+                  <span class="stack-tag">Vercel</span>
+                </div>
+                <div class="proj-links">
+                  <a class="proj-link" href="https://euro-live.vercel.app" target="_blank" rel="noopener noreferrer">Visit site →</a>
+                </div>
+              </div>
+              <div class="proj-visual">
+                <div class="proj-visual-placeholder">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span>No preview</span>
+                </div>
+              </div>
+            </div>`;
+          return;
+        }
+
+        const projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        // Filter out Draft projects from public view
+        const visible  = projects.filter(p => (p.status || 'Live').toLowerCase() !== 'draft');
+        wrap.innerHTML = visible.map((p, i) => buildCard(p, i)).join('');
+
+      } catch (err) {
+        console.warn('Firebase load failed, showing fallback:', err);
+        // On error fall back to hardcoded Euro Live card
+        document.getElementById('skel1').remove();
+        wrap.innerHTML = `
+          <div class="project-card" style="animation-delay:0.15s;">
+            <div class="project-body">
+              <div class="project-top">
+                <span class="proj-num">01</span>
+                <span class="proj-status live"><span class="live-dot"></span>Live</span>
+              </div>
+              <div class="proj-title">Euro Live</div>
+              <p class="proj-desc">Real-time football scores and match statistics. Built lightweight from scratch — no frameworks, just clean JavaScript pulling live data and rendering it fast.</p>
+              <div class="proj-stack">
+                <span class="stack-tag">HTML</span><span class="stack-tag">CSS</span>
+                <span class="stack-tag">JavaScript</span><span class="stack-tag">Vercel</span>
+              </div>
+              <div class="proj-links">
+                <a class="proj-link" href="https://euro-live.vercel.app" target="_blank">Visit site →</a>
+              </div>
+            </div>
+            <div class="proj-visual"><div class="proj-visual-placeholder"><span>No preview</span></div></div>
+          </div>`;
+      }
+    }
+
+    loadProjects();
+  </script>
+
+</body>
+</html>
