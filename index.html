@@ -304,14 +304,14 @@
     import { initializeApp }              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
     import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-    // ✏️ FIREBASE CONFIG
+    // ✏️  REPLACE WITH YOUR FIREBASE CONFIG
     const firebaseConfig = {
-      apiKey: "AIzaSyBRsenqkz6y8X9qv1kkp2lm9Ud3UzdOQ5A",
-      authDomain: "roychid-terminal.firebaseapp.com",
-      projectId: "roychid-terminal",
-      storageBucket: "roychid-terminal.firebasestorage.app",
-      messagingSenderId: "315928325816",
-      appId: "1:315928325816:web:51874a4df9128de9b8ce4d"
+      apiKey:            "YOUR_API_KEY",
+      authDomain:        "YOUR_PROJECT.firebaseapp.com",
+      projectId:         "YOUR_PROJECT_ID",
+      storageBucket:     "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId:             "YOUR_APP_ID",
     };
 
     const app = initializeApp(firebaseConfig);
@@ -376,5 +376,27 @@
     }).catch(() => {});
   </script>
 
+
+<!-- Analytics tracking -->
+<script type="module">
+(async()=>{
+  try{
+    const r=await fetch('https://ipapi.co/json/');
+    const d=await r.json();
+    const {initializeApp}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+    const {getFirestore,addDoc,collection,serverTimestamp}=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const app=initializeApp({projectId:"roychid-terminal",apiKey:"AIzaSyBRsenqkz6y8X9qv1kkp2lm9Ud3UzdOQ5A",authDomain:"roychid-terminal.firebaseapp.com"},{name:'analytics-'+Math.random()});
+    const db=getFirestore(app);
+    await addDoc(collection(db,'analytics'),{
+      page:location.pathname,
+      country:d.country_name||'Unknown',
+      city:d.city||'',
+      device:/Mobi|Android/i.test(navigator.userAgent)?'mobile':'desktop',
+      ref:document.referrer||'direct',
+      ts:serverTimestamp()
+    });
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
